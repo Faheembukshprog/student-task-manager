@@ -88,10 +88,44 @@ const deleteStudent = async (req, res) => {
   }
 };
 
+const searchStudents = async (req, res) => {
+  try {
+    const { minAge, course, status } = req.query;
+
+    const conditions = [];
+
+    if (minAge) {
+      conditions.push({ age: { $gte: Number(minAge) } });
+    }
+
+    if (course) {
+        conditions.push({ course: course });
+    }
+
+    if (status) {
+        conditions.push({ status: status });
+    }
+
+    const filter = conditions.length > 0
+        ? { $and: conditions}
+        : {}; 
+
+    const students = await Student.find(filter);
+
+    res.json(students);
+  } catch (error) {
+            res.status(500).json({
+              message: "Search failed",
+              error: error.message
+            });
+        }
+};
+
 module.exports = {
   getStudents,
   getStudentById,
   createStudent,
   updateStudent,
   deleteStudent,
+  searchStudents,
 };
