@@ -99,26 +99,50 @@ const searchStudents = async (req, res) => {
     }
 
     if (course) {
-        conditions.push({ course: course });
+      conditions.push({ course: course });
     }
 
     if (status) {
-        conditions.push({ status: status });
+      conditions.push({ status: status });
     }
 
-    const filter = conditions.length > 0
-        ? { $and: conditions}
-        : {}; 
+    const filter = conditions.length > 0 ? { $and: conditions } : {};
 
     const students = await Student.find(filter);
 
     res.json(students);
   } catch (error) {
-            res.status(500).json({
-              message: "Search failed",
-              error: error.message
-            });
-        }
+    res.status(500).json({
+      message: "Search failed",
+      error: error.message,
+    });
+  }
+};
+
+const getStudentStats = async (req, res) => {
+  try {
+    const stats = await Studnet.aggregate([
+      {
+        $group: {
+          _id: "$course",
+          totalStudents: { $sum: 1 },
+          avgAge: { $age: "age" },
+        },
+      },
+      {
+        $sort: {
+          totalStudents: -1,
+        },
+      },
+    ]);
+
+    res.json(stats);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to generate student statistics",
+      error: error.message,
+    });
+  }
 };
 
 module.exports = {
@@ -128,4 +152,5 @@ module.exports = {
   updateStudent,
   deleteStudent,
   searchStudents,
+  getStudentStats,
 };
