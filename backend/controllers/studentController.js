@@ -121,12 +121,12 @@ const searchStudents = async (req, res) => {
 
 const getStudentStats = async (req, res) => {
   try {
-    const stats = await Studnet.aggregate([
+    const stats = await Student.aggregate([
       {
         $group: {
           _id: "$course",
           totalStudents: { $sum: 1 },
-          avgAge: { $age: "age" },
+          avgAge: { $avg: "$age" },
         },
       },
       {

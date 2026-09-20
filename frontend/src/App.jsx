@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Students from "./pages/Students";
 
+
 function Home() {
   return (
     <div>
@@ -32,7 +33,7 @@ function App() {
   return (
     <BrowserRouter>
       <nav>
-        <Link to="/"></Link>
+        <Link to="/">Home</Link>
         {" | "}
         <Link to="/students">Students</Link>
         {" | "}
